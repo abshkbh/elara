@@ -1,0 +1,10 @@
+.parent {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+  
+.submit {
+    display: flex;
+    flex-direction: row;
+}
