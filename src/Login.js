@@ -2,6 +2,7 @@ import React from 'react';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import './Login.css';
+import Session from './Session.js';
 
 const USERNAME_TEXT = "Username"
 const USERNAME_ID = "username"
@@ -14,6 +15,7 @@ class Login extends React.Component {
         this.state = {
             user_name: '',
             user_password: '',
+            session_started: false,
         }
 
         this.updateInput = this.updateInput.bind(this)
@@ -39,10 +41,18 @@ class Login extends React.Component {
 
     handleSubmit() {
         console.log('handleSubmit')
+        this.setState({
+            session_started: true
+        })
     }
 
     render() {
         console.log('In Login render')
+        if (this.state.session_started) {
+            console.log("Session started");
+            return <Session />
+        }
+
         return (
             <div className="parent">
                 <h1>Elara</h1>
@@ -55,7 +65,7 @@ class Login extends React.Component {
                 <TextField id={PASSWORD_ID} label={PASSWORD_TEXT} variant="outlined"
                     onChange={this.updateInput} value={this.state.game_password} />
                 <div className="submit">
-                    <Button variant="contained" onClick={() => this.handleSubmit}>Submit</Button>
+                    <Button variant="contained" onClick={() => this.handleSubmit()}>Submit</Button>
                 </div>
             </div>
         );
