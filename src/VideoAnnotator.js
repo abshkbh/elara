@@ -2,6 +2,14 @@ import React from 'react';
 import YouTube from 'react-youtube';
 
 class VideoAnnotator extends React.Component {
+    constructor(props) {
+        super(props)
+        this.state = {
+            url: this.props.url,
+        }
+        console.log("URL: " + this.state.url)
+    }
+
     render() {
         const opts = {
             height: '390',
@@ -12,9 +20,9 @@ class VideoAnnotator extends React.Component {
             },
         };
 
-        return <YouTube videoId = "2g811Eo7K8U"
-        opts = { opts }
-        onReady = { this._onReady }
+        return <YouTube videoId="2g811Eo7K8U"
+            opts={opts}
+            onReady={this._onReady}
         />;
     }
 
