@@ -1,15 +1,26 @@
 import React from 'react';
+import YouTube from 'react-youtube';
 
 class VideoAnnotator extends React.Component {
-    constructor(props) {
-        super(props)
+    render() {
+        const opts = {
+            height: '390',
+            width: '640',
+            playerVars: {
+                // https://developers.google.com/youtube/player_parameters
+                autoplay: 1,
+            },
+        };
+
+        return <YouTube videoId = "2g811Eo7K8U"
+        opts = { opts }
+        onReady = { this._onReady }
+        />;
     }
 
-    render() {
-        console.log('In VideoAnnotator')
-        return (
-            <h1>VideoAnnotator</h1>
-        );
+    _onReady(event) {
+        // access to player in all event handlers via event.target
+        //event.target.pauseVideo();
     }
 }
 
