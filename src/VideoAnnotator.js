@@ -1,5 +1,11 @@
 import React from 'react';
 import YouTube from 'react-youtube';
+import TextField from '@material-ui/core/TextField';
+import Button from '@material-ui/core/Button';
+
+const ADD_ANNOTATION_TEXT = "ADD ANNOTATION"
+const ANNOTATION_ID = "annotation"
+const ANNOTATION_TEXT = "annotation"
 
 // For now only Youtube videos are supported. Parse the Id of the video.
 function getYTVideoId(url) {
@@ -17,8 +23,32 @@ class VideoAnnotator extends React.Component {
         super(props)
         this.state = {
             url: this.props.url,
+            show_annotation_input: false,
+            current_annotation: '',
         }
         console.log("URL: " + this.state.url)
+        this.handleAddAnnotation = this.handleAddAnnotation.bind(this)
+        this.updateInput = this.updateInput.bind(this)
+    }
+
+    updateInput(e) {
+        console.log('updateInput')
+        const value = e.target.value
+        const id = e.target.id
+
+        if (id === ANNOTATION_ID) {
+            this.setState({
+                current_annotation: value
+            })
+        } else {
+            console.log("Unrecognized input field")
+        }
+    }
+
+    handleAddAnnotation() {
+        this.setState({
+            show_annotation_input: true
+        })
     }
 
     render() {
@@ -31,10 +61,29 @@ class VideoAnnotator extends React.Component {
             },
         };
 
-        return <YouTube videoId={getYTVideoId(this.state.url)}
-            opts={opts}
-            onReady={this._onReady}
-        />;
+        let annotation_component;
+        if (this.state.show_annotation_input) {
+            annotation_component = <TextField id={ANNOTATION_ID} label={ANNOTATION_TEXT}
+                variant="outlined"
+                onChange={this.updateInput}
+                value={this.state.current_annotation} />
+        } else {
+            annotation_component = <Button variant="contained" onClick={() => this.handleAddAnnotation()}>{ADD_ANNOTATION_TEXT}</Button>
+        }
+
+        return (
+            <div>
+                <div>
+                    <YouTube videoId={getYTVideoId(this.state.url)}
+                        opts={opts}
+                        onReady={this._onReady}
+                    />
+                </div>
+                <div>
+                    {annotation_component}
+                </div>
+            </div>
+        );
     }
 
     _onReady(event) {
