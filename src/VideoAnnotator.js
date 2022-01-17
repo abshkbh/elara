@@ -6,12 +6,13 @@ import Button from '@material-ui/core/Button';
 const ADD_ANNOTATION_TEXT = "ADD ANNOTATION"
 const ANNOTATION_ID = "annotation"
 const ANNOTATION_TEXT = "annotation"
+const SUBMIT_ANNOTATION_TEXT = "SUBMIT ANNOTATION"
 
 // For now only Youtube videos are supported. Parse the Id of the video.
 function getYTVideoId(url) {
     var regExp = /^.*(youtu\.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
     var match = url.match(regExp);
-    if (match && match[2].length == 11) {
+    if (match && match[2].length === 11) {
         return match[2];
     } else {
         return ''
@@ -28,6 +29,7 @@ class VideoAnnotator extends React.Component {
         }
         console.log("URL: " + this.state.url)
         this.handleAddAnnotation = this.handleAddAnnotation.bind(this)
+        this.handleSubmitAnnotation = this.handleSubmitAnnotation.bind(this)
         this.updateInput = this.updateInput.bind(this)
     }
 
@@ -51,6 +53,10 @@ class VideoAnnotator extends React.Component {
         })
     }
 
+    handleSubmitAnnotation() {
+        console.log('Submit Annotation')
+    }
+
     render() {
         const opts = {
             height: '390',
@@ -63,10 +69,12 @@ class VideoAnnotator extends React.Component {
 
         let annotation_component;
         if (this.state.show_annotation_input) {
-            annotation_component = <TextField id={ANNOTATION_ID} label={ANNOTATION_TEXT}
+            annotation_component = <div> <TextField id={ANNOTATION_ID} label={ANNOTATION_TEXT}
                 variant="outlined"
                 onChange={this.updateInput}
                 value={this.state.current_annotation} />
+                <Button variant="contained" onClick={() => this.handleSubmitAnnotation()}>{SUBMIT_ANNOTATION_TEXT}</Button>
+            </div>
         } else {
             annotation_component = <Button variant="contained" onClick={() => this.handleAddAnnotation()}>{ADD_ANNOTATION_TEXT}</Button>
         }
