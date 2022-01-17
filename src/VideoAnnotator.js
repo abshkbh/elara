@@ -1,6 +1,17 @@
 import React from 'react';
 import YouTube from 'react-youtube';
 
+// For now only Youtube videos are supported. Parse the Id of the video.
+function getYTVideoId(url) {
+    var regExp = /^.*(youtu\.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+    var match = url.match(regExp);
+    if (match && match[2].length == 11) {
+        return match[2];
+    } else {
+        return ''
+    }
+}
+
 class VideoAnnotator extends React.Component {
     constructor(props) {
         super(props)
@@ -20,7 +31,7 @@ class VideoAnnotator extends React.Component {
             },
         };
 
-        return <YouTube videoId="2g811Eo7K8U"
+        return <YouTube videoId={getYTVideoId(this.state.url)}
             opts={opts}
             onReady={this._onReady}
         />;
