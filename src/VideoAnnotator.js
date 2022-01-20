@@ -61,7 +61,7 @@ class VideoAnnotator extends React.Component {
 
     handleSubmitAnnotation() {
         let video_player = document.getElementById(VIDEO_PLAYER_ID);
-        console.log('Submit Annotation Timestamp: ' + video_player.playerInfo.currentTime);
+        console.log('Submit Annotation Timestamp: ' + player.getCurrentTime() + " Annotation: " + this.state.current_annotation);
     }
 
     render() {
