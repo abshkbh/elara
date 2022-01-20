@@ -7,6 +7,10 @@ const ADD_ANNOTATION_TEXT = "ADD ANNOTATION"
 const ANNOTATION_ID = "annotation"
 const ANNOTATION_TEXT = "annotation"
 const SUBMIT_ANNOTATION_TEXT = "SUBMIT ANNOTATION"
+const VIDEO_PLAYER_ID = "video-player"
+
+// TODO: Figure out a way to make this part of |state|.
+let player = null
 
 // For now only Youtube videos are supported. Parse the Id of the video.
 function getYTVideoId(url) {
@@ -26,6 +30,7 @@ class VideoAnnotator extends React.Component {
             url: this.props.url,
             show_annotation_input: false,
             current_annotation: '',
+            player: null,
         }
         console.log("URL: " + this.state.url)
         this.handleAddAnnotation = this.handleAddAnnotation.bind(this)
@@ -48,13 +53,15 @@ class VideoAnnotator extends React.Component {
     }
 
     handleAddAnnotation() {
+        console.log('Current Timestamp: ' + player.getCurrentTime() + 's')
         this.setState({
             show_annotation_input: true
         })
     }
 
     handleSubmitAnnotation() {
-        console.log('Submit Annotation')
+        let video_player = document.getElementById(VIDEO_PLAYER_ID);
+        console.log('Submit Annotation Timestamp: ' + video_player.playerInfo.currentTime);
     }
 
     render() {
@@ -84,7 +91,8 @@ class VideoAnnotator extends React.Component {
                 <div>
                     <YouTube videoId={getYTVideoId(this.state.url)}
                         opts={opts}
-                        onReady={this._onReady}
+                        id={VIDEO_PLAYER_ID}
+                        onReady={this.onReady}
                     />
                 </div>
                 <div>
@@ -94,9 +102,11 @@ class VideoAnnotator extends React.Component {
         );
     }
 
-    _onReady(event) {
+    onReady(event) {
         // access to player in all event handlers via event.target
         //event.target.pauseVideo();
+        console.log('onReady')
+        player = event.target
     }
 }
 
