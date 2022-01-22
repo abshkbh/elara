@@ -23,6 +23,12 @@ function getYTVideoId(url) {
     }
 }
 
+function getPrettyTs(ts) {
+    let pretty_ts = parseFloat(ts)
+    pretty_ts = Math.round(pretty_ts * 100) / 100
+    return pretty_ts.toString()
+}
+
 class VideoAnnotator extends React.Component {
     constructor(props) {
         super(props)
@@ -96,7 +102,7 @@ class VideoAnnotator extends React.Component {
         }
 
         const annotations = this.state.annotations.map((annotation) => <li key={annotation.ts.toString()}>
-            {annotation.ts + ": " + annotation.content}
+            {getPrettyTs(annotation.ts) + ": " + annotation.content}
         </li>)
 
         return (
