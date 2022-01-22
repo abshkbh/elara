@@ -29,8 +29,10 @@ class VideoAnnotator extends React.Component {
         this.state = {
             url: this.props.url,
             show_annotation_input: false,
-            current_annotation: '',
+            current_annotation_content: '',
+            current_annotation_ts: '',
             player: null,
+            annotations: [],
         }
         console.log("URL: " + this.state.url)
         this.handleAddAnnotation = this.handleAddAnnotation.bind(this)
@@ -45,7 +47,7 @@ class VideoAnnotator extends React.Component {
 
         if (id === ANNOTATION_ID) {
             this.setState({
-                current_annotation: value
+                current_annotation_content: value
             })
         } else {
             console.log("Unrecognized input field")
@@ -55,13 +57,17 @@ class VideoAnnotator extends React.Component {
     handleAddAnnotation() {
         console.log('Current Timestamp: ' + player.getCurrentTime() + 's')
         this.setState({
+            current_annotation_ts: player.getCurrentTime(),
             show_annotation_input: true
         })
     }
 
     handleSubmitAnnotation() {
         let video_player = document.getElementById(VIDEO_PLAYER_ID);
-        console.log('Submit Annotation Timestamp: ' + player.getCurrentTime() + " Annotation: " + this.state.current_annotation);
+        console.log('Submit Annotation Timestamp: ' + player.getCurrentTime() + " Annotation: " + this.state.current_annotation_content)
+        this.setState({
+            annotations: this.state.annotations.concat({ "ts": this.state.current_annotation_ts, "content": this.state.current_annotation_content })
+        })
     }
 
     render() {
@@ -79,12 +85,16 @@ class VideoAnnotator extends React.Component {
             annotation_component = <div> <TextField id={ANNOTATION_ID} label={ANNOTATION_TEXT}
                 variant="outlined"
                 onChange={this.updateInput}
-                value={this.state.current_annotation} />
+                value={this.state.current_annotation_content} />
                 <Button variant="contained" onClick={() => this.handleSubmitAnnotation()}>{SUBMIT_ANNOTATION_TEXT}</Button>
             </div>
         } else {
             annotation_component = <Button variant="contained" onClick={() => this.handleAddAnnotation()}>{ADD_ANNOTATION_TEXT}</Button>
         }
+
+        const annotations = this.state.annotations.map((annotation) => <li key={annotation.ts.toString()}>
+            {annotation.ts + ": " + annotation.content}
+        </li>)
 
         return (
             <div>
@@ -97,6 +107,9 @@ class VideoAnnotator extends React.Component {
                 </div>
                 <div>
                     {annotation_component}
+                </div>
+                <div>
+                    <ul>{annotations}</ul>
                 </div>
             </div>
         );
