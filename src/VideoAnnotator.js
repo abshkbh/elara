@@ -44,6 +44,7 @@ class VideoAnnotator extends React.Component {
         this.handleAddAnnotation = this.handleAddAnnotation.bind(this)
         this.handleSubmitAnnotation = this.handleSubmitAnnotation.bind(this)
         this.updateInput = this.updateInput.bind(this)
+        this.getYTVideoURLAtTs = this.getYTVideoURLAtTs.bind(this)
     }
 
     updateInput(e) {
@@ -79,6 +80,11 @@ class VideoAnnotator extends React.Component {
         })
     }
 
+    getYTVideoURLAtTs(ts) {
+        console.log(this.state.url + "&t=" + Math.round(ts) + "s")
+        return this.state.url + "&t=" + Math.round(ts) + "s"
+    }
+
     render() {
         const opts = {
             height: '390',
@@ -102,7 +108,7 @@ class VideoAnnotator extends React.Component {
         }
 
         const annotations = this.state.annotations.map((annotation) => <li key={annotation.ts.toString()}>
-            {getPrettyTs(annotation.ts) + ": " + annotation.content}
+            <a href={this.getYTVideoURLAtTs(annotation.ts)} target="_blank" rel="noopener noreferrer">{getPrettyTs(annotation.ts) + ": " + annotation.content}</a>
         </li>)
 
         return (
