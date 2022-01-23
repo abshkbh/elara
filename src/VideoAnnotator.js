@@ -131,6 +131,7 @@ class VideoAnnotator extends React.Component {
             annotation_component = <Button variant="contained" onClick={() => this.handleAddAnnotation()}>{ADD_ANNOTATION_TEXT}</Button>
         }
 
+        // TODO: Pull <li> in a separate component.
         const annotations = this.state.annotations.map((annotation) => <li key={annotation.ts.toString()} onClick={() => this.seekVideo(annotation.ts)}>
             <a href="#">{getPrettyTs(annotation.ts) + ": " + annotation.content}</a>
         </li>)
