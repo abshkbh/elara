@@ -23,10 +23,28 @@ function getYTVideoId(url) {
     }
 }
 
-function getPrettyTs(ts) {
-    let pretty_ts = parseFloat(ts)
-    pretty_ts = Math.round(pretty_ts * 100) / 100
-    return pretty_ts.toString()
+// |seconds| represents seconds in decimals in a string. For e.g. "2.3456" seconds or "120.12".
+// This function returns a string in "hh:mm:ss" (if hours > 0) or "mm:ss".
+function getPrettyTs(seconds) {
+    let secs = parseFloat(seconds)
+    secs = Math.floor(seconds)
+
+    let mins = 0;
+    if (secs >= 60) {
+        mins = Math.floor(secs / 60)
+        secs = secs % 60
+    }
+
+    let hours = 0;
+    if (mins >= 60) {
+        hours = Math.floor(mins / 60)
+        mins = hours % 60
+    }
+
+    if (hours > 0) {
+        return hours.toString() + ":" + mins.toString().padStart(2, '0') + ":" + secs.toString().padStart(2, '0')
+    }
+    return mins.toString() + ":" + secs.toString().padStart(2, '0')
 }
 
 class VideoAnnotator extends React.Component {
@@ -45,6 +63,7 @@ class VideoAnnotator extends React.Component {
         this.handleSubmitAnnotation = this.handleSubmitAnnotation.bind(this)
         this.updateInput = this.updateInput.bind(this)
         this.getYTVideoURLAtTs = this.getYTVideoURLAtTs.bind(this)
+        this.seekVideo = this.seekVideo.bind(this)
     }
 
     updateInput(e) {
@@ -85,6 +104,11 @@ class VideoAnnotator extends React.Component {
         return this.state.url + "&t=" + Math.round(ts) + "s"
     }
 
+    seekVideo(ts) {
+        console.log('In seekVideo ts: ' + ts)
+        player.seekTo(Number.parseFloat(ts), true)
+    }
+
     render() {
         const opts = {
             height: '390',
@@ -107,8 +131,8 @@ class VideoAnnotator extends React.Component {
             annotation_component = <Button variant="contained" onClick={() => this.handleAddAnnotation()}>{ADD_ANNOTATION_TEXT}</Button>
         }
 
-        const annotations = this.state.annotations.map((annotation) => <li key={annotation.ts.toString()}>
-            <a href={this.getYTVideoURLAtTs(annotation.ts)} target="_blank" rel="noopener noreferrer">{getPrettyTs(annotation.ts) + ": " + annotation.content}</a>
+        const annotations = this.state.annotations.map((annotation) => <li key={annotation.ts.toString()} onClick={() => this.seekVideo(annotation.ts)}>
+            <a href="#">{getPrettyTs(annotation.ts) + ": " + annotation.content}</a>
         </li>)
 
         return (
