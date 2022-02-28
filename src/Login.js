@@ -50,7 +50,7 @@ class Login extends React.Component {
         console.log('In Login render')
         if (this.state.session_started) {
             console.log("Session started");
-            return <Session />
+            return <Session email={this.state.user_name}/>
         }
 
         return (

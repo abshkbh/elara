@@ -1,12 +1,22 @@
 import React from 'react';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
+import Constants from './Constants.js';
 import VideoAnnotator from './VideoAnnotator.js';
 import './Session.css';
+import UserVideos from './UserVideos.js';
 
 const URL_TEXT = "URL"
 const URL_ID = "url"
 const LOAD_VIDEO_TEXT = "LOAD VIDEO"
+
+function handleFetchErrors(response) {
+    if (!response.ok) {
+        throw Error(response.statusText);
+    }
+    return response;
+}
+
 
 class Session extends React.Component {
     constructor(props) {
@@ -14,10 +24,12 @@ class Session extends React.Component {
         this.state = {
             video_url: '',
             load_video: false,
+            user_videos: [],
         }
 
         this.updateInput = this.updateInput.bind(this)
         this.handleLoadVideo = this.handleLoadVideo.bind(this)
+        this.loadUserVideos = this.loadUserVideos.bind(this)
     }
 
     updateInput(e) {
@@ -34,6 +46,12 @@ class Session extends React.Component {
         }
     }
 
+    componentDidMount() {
+        // Initialize user's existing videos from the server.
+        // TODO: Is "this" required here.
+        this.loadUserVideos()
+    }
+
     handleLoadVideo() {
         console.log('handleLoadVideo url:' + this.state.video_url)
         if (!this.state.video_url || this.state.video_url === '') {
@@ -46,8 +64,35 @@ class Session extends React.Component {
         })
     }
 
+    loadUserVideos() {
+        console.log('loadUserVideos')
+        let route_to_fetch = Constants.Server + "/list?email=" + this.props.email
+        console.log('Fetching: ' + route_to_fetch)
+        fetch(route_to_fetch,
+            {
+                method: 'GET',
+            }
+        ).then(handleFetchErrors)
+            .then(response => {
+                console.log("loadUserVideos response: ", response)
+                return response.json()
+            }
+            )
+            .then(data => {
+                console.log("loadUserVideos data: ", data)
+                this.setState(
+                    {
+                        user_videos: data.video_urls
+                    }
+                )
+            })
+            .catch(error => {
+                console.log("Request error: " + error)
+            })
+    }
+
     render() {
-        console.log('In Session render')
+        console.log('In Session render user_videos: ' + this.state.user_videos)
         if (this.state.load_video) {
             console.log("Load Video");
             return <VideoAnnotator url={this.state.video_url} />
@@ -67,6 +112,9 @@ class Session extends React.Component {
                 </div>
                 <div>
                     <Button variant="contained" onClick={() => this.handleLoadVideo()}>{LOAD_VIDEO_TEXT}</Button>
+                </div>
+                <div>
+                    <UserVideos user_videos={this.state.user_videos} />
                 </div>
             </div>
         );
