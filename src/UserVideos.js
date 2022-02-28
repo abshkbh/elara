@@ -1,4 +1,5 @@
 import React from 'react';
+import Constants from './Constants';
 
 class UserVideos extends React.Component {
     constructor(props) {
@@ -8,14 +9,18 @@ class UserVideos extends React.Component {
 
     render() {
         console.log("UserVideos render urls: " + this.props.user_videos)
-        const listItems = this.props.user_videos.map((url) =>
-            <li key={url}>
-                {url}
-            </li >
+        const listItems = this.props.user_videos.map((video_id) => {
+            const video_url = Constants.YT_WATCH_URL + video_id
+            return (
+                <li key={video_url}>
+                    <a href={video_url}>{video_url}</a>
+                </li>
+            )
+        }
         )
 
         return (
-            <ul>{listItems}</ul>
+            <ul> {listItems}</ul >
         );
     }
 }
