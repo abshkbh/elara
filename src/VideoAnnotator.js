@@ -51,14 +51,13 @@ class VideoAnnotator extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            url: this.props.url,
             show_annotation_input: false,
             current_annotation_content: '',
             current_annotation_ts: '',
             player: null,
             annotations: [],
         }
-        console.log("URL: " + this.state.url)
+        console.log("URL: " + this.props.url)
         this.handleAddAnnotation = this.handleAddAnnotation.bind(this)
         this.handleSubmitAnnotation = this.handleSubmitAnnotation.bind(this)
         this.updateInput = this.updateInput.bind(this)
@@ -100,8 +99,8 @@ class VideoAnnotator extends React.Component {
     }
 
     getYTVideoURLAtTs(ts) {
-        console.log(this.state.url + "&t=" + Math.round(ts) + "s")
-        return this.state.url + "&t=" + Math.round(ts) + "s"
+        console.log(this.props.url + "&t=" + Math.round(ts) + "s")
+        return this.props.url + "&t=" + Math.round(ts) + "s"
     }
 
     seekVideo(ts) {
@@ -140,7 +139,7 @@ class VideoAnnotator extends React.Component {
         return (
             <div>
                 <div>
-                    <YouTube videoId={getYTVideoId(this.state.url)}
+                    <YouTube videoId={getYTVideoId(this.props.url)}
                         opts={opts}
                         id={VIDEO_PLAYER_ID}
                         onReady={this.onReady}
