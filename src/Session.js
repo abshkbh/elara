@@ -94,10 +94,11 @@ class Session extends React.Component {
     render() {
         console.log('In Session render user_videos: ' + this.state.user_videos)
         if (this.state.load_video) {
-            console.log("Load Video");
+            console.log("Load Video")
             return <VideoAnnotator url={this.state.video_url} />
         }
 
+        // TODO: Add "Loading" for UserVideos.
 
         return (
             <div className="session">
