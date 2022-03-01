@@ -109,7 +109,7 @@ class VideoAnnotator extends React.Component {
                     'Content-Type': 'application/json',
                     'Access-Control-Allow-Origin': '*',
                 },
-                body: JSON.stringify({ email: this.props.email, video_id: getYTVideoId(this.props.url), ts: this.state.current_annotation_ts, content: this.state.current_annotation_content }),
+                body: JSON.stringify({ email: this.props.email, video_id: getYTVideoId(this.props.url), ts: this.state.current_annotation_ts, content: this.state.current_annotation_content, video_title: this.state.video_title }),
             }
         ).then(handleFetchErrors)
             .then(response => {

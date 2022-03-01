@@ -9,11 +9,18 @@ class UserVideos extends React.Component {
 
     render() {
         console.log("UserVideos render urls: " + this.props.user_videos)
-        const listItems = this.props.user_videos.map((video_id) => {
-            const video_url = Constants.YT_WATCH_URL + video_id
+        // Return an empty element if no existing videos.
+        if (Object.keys(this.props.user_videos).length === 0) {
+            console.log("no existing videos")
+            return <div></div>
+        }
+
+        const listItems = Object.entries(this.props.user_videos).map(([id, title]) => {
+            console.log("id=" + id + "title=" + title)
+            const video_url = Constants.YT_WATCH_URL + id
             return (
                 <li key={video_url}>
-                    <a href={video_url}>{video_url}</a>
+                    <a href={video_url}>{title}</a>
                 </li>
             )
         }

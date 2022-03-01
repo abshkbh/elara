@@ -25,6 +25,7 @@ class Session extends React.Component {
             video_url: '',
             load_video: false,
             user_videos: [],
+            loading_existing_videos_list: true,
         }
 
         this.updateInput = this.updateInput.bind(this)
@@ -71,6 +72,9 @@ class Session extends React.Component {
         fetch(route_to_fetch,
             {
                 method: 'GET',
+                headers: {
+                    'Access-Control-Allow-Origin': '*',
+                },
             }
         ).then(handleFetchErrors)
             .then(response => {
@@ -82,7 +86,8 @@ class Session extends React.Component {
                 console.log("loadUserVideos data: ", data)
                 this.setState(
                     {
-                        user_videos: data.video_urls
+                        user_videos: data.user_videos,
+                        loading_existing_videos_list: false
                     }
                 )
             })
@@ -98,7 +103,12 @@ class Session extends React.Component {
             return <VideoAnnotator url={this.state.video_url} email={this.props.email} />
         }
 
-        // TODO: Add "Loading" for UserVideos.
+        let user_videos;
+        if (this.state.loading_existing_videos_list) {
+            user_videos = <p>Loading...</p>
+        } else {
+            user_videos = <UserVideos user_videos={this.state.user_videos} />
+        }
 
         return (
             <div className="session">
@@ -115,7 +125,7 @@ class Session extends React.Component {
                     <Button variant="contained" onClick={() => this.handleLoadVideo()}>{LOAD_VIDEO_TEXT}</Button>
                 </div>
                 <div>
-                    <UserVideos user_videos={this.state.user_videos} />
+                    {user_videos}
                 </div>
             </div>
         );
