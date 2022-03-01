@@ -64,6 +64,7 @@ class VideoAnnotator extends React.Component {
             current_annotation_ts: '',
             player: null,
             annotations: [],
+            video_title: '',
         }
         console.log("URL: " + this.props.url)
         this.handleAddAnnotation = this.handleAddAnnotation.bind(this)
@@ -71,6 +72,7 @@ class VideoAnnotator extends React.Component {
         this.updateInput = this.updateInput.bind(this)
         this.getYTVideoURLAtTs = this.getYTVideoURLAtTs.bind(this)
         this.seekVideo = this.seekVideo.bind(this)
+        this.onReady = this.onReady.bind(this)
     }
 
     updateInput(e) {
@@ -189,7 +191,12 @@ class VideoAnnotator extends React.Component {
     onReady(event) {
         // access to player in all event handlers via event.target
         //event.target.pauseVideo();
-        console.log('onReady')
+        console.log('onReady title: ' + event.target.getVideoData().title)
+        this.setState(
+            {
+                video_title: event.target.getVideoData().title
+            }
+        )
         player = event.target
     }
 }
