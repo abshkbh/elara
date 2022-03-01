@@ -2,6 +2,7 @@ import React from 'react';
 import YouTube from 'react-youtube';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
+import Constants from './Constants.js';
 
 const ADD_ANNOTATION_TEXT = "ADD ANNOTATION"
 const ANNOTATION_ID = "annotation"
@@ -11,6 +12,13 @@ const VIDEO_PLAYER_ID = "video-player"
 
 // TODO: Figure out a way to make this part of |state|.
 let player = null
+
+function handleFetchErrors(response) {
+    if (!response.ok) {
+        throw Error(response.statusText);
+    }
+    return response;
+}
 
 // For now only Youtube videos are supported. Parse the Id of the video.
 function getYTVideoId(url) {
@@ -82,7 +90,7 @@ class VideoAnnotator extends React.Component {
     handleAddAnnotation() {
         console.log('Current Timestamp: ' + player.getCurrentTime() + 's')
         this.setState({
-            current_annotation_ts: player.getCurrentTime(),
+            current_annotation_ts: player.getCurrentTime().toString(),
             show_annotation_input: true
         })
     }
@@ -90,12 +98,35 @@ class VideoAnnotator extends React.Component {
     handleSubmitAnnotation() {
         let video_player = document.getElementById(VIDEO_PLAYER_ID);
         console.log('Submit Annotation Timestamp: ' + player.getCurrentTime() + " Annotation: " + this.state.current_annotation_content)
-        this.setState({
-            annotations: this.state.annotations.concat({ "ts": this.state.current_annotation_ts, "content": this.state.current_annotation_content }),
-            show_annotation_input: false,
-            current_annotation_content: '',
-            current_annotation_ts: '',
-        })
+        let route_to_fetch = Constants.Server + "/add"
+        console.log('Putting: ' + route_to_fetch)
+        fetch(route_to_fetch,
+            {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': '*',
+                },
+                body: JSON.stringify({ email: this.props.email, video_id: getYTVideoId(this.props.url), ts: this.state.current_annotation_ts, content: this.state.current_annotation_content }),
+            }
+        ).then(handleFetchErrors)
+            .then(response => {
+                console.log("submit annotation response: ", response)
+                return response.json()
+            }
+            )
+            .then(data => {
+                console.log("submit annotation data: ", data)
+                this.setState({
+                    annotations: this.state.annotations.concat({ "ts": this.state.current_annotation_ts, "content": this.state.current_annotation_content }),
+                    show_annotation_input: false,
+                    current_annotation_content: '',
+                    current_annotation_ts: '',
+                })
+            })
+            .catch(error => {
+                console.log("Submit annotation error: " + error)
+            })
     }
 
     getYTVideoURLAtTs(ts) {
