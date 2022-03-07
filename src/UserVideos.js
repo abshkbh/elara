@@ -1,5 +1,5 @@
 import React from 'react';
-import Constants from './Constants';
+import { Link } from 'react-router-dom';
 
 class UserVideos extends React.Component {
     constructor(props) {
@@ -17,10 +17,9 @@ class UserVideos extends React.Component {
 
         const listItems = Object.entries(this.props.user_videos).map(([id, title]) => {
             console.log("id=" + id + "title=" + title)
-            const video_url = Constants.YT_WATCH_URL + id
             return (
-                <li key={video_url}>
-                    <a href={video_url}>{title}</a>
+                <li key={id}>
+                    <Link to={`/list/existing/${id}`}>{title}</Link>
                 </li>
             )
         }

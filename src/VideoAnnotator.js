@@ -3,6 +3,7 @@ import YouTube from 'react-youtube';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import Constants from './Constants.js';
+import { useParams } from 'react-router-dom';
 
 const ADD_ANNOTATION_TEXT = "ADD ANNOTATION"
 const ANNOTATION_ID = "annotation"
@@ -44,9 +45,25 @@ function getPrettyTs(seconds) {
     return mins.toString() + ":" + secs.toString().padStart(2, '0')
 }
 
+export function withRouter(Children) {
+    return (props) => {
+
+        const match = { params: useParams() };
+        return <Children {...props} match={match} />
+    }
+}
+
 class VideoAnnotator extends React.Component {
     constructor(props) {
         super(props)
+        // The `video_id` can come from either pressing "Submit" from Session or as a "Link" from
+        // UserVideos. Both these cases pass `video_id` in a different way.
+        let video_id;
+        if (typeof this.props.video_id !== 'undefined') {
+            video_id = this.props.video_id
+        } else {
+            video_id = this.props.match.params.video_id
+        }
         this.state = {
             show_annotation_input: false,
             current_annotation_content: '',
@@ -54,8 +71,9 @@ class VideoAnnotator extends React.Component {
             player: null,
             annotations: [],
             video_title: '',
+            video_id: video_id,
         }
-        console.log("video_id: " + this.props.video_id)
+        console.log("video_id: " + this.state.video_id)
         this.handleAddAnnotation = this.handleAddAnnotation.bind(this)
         this.handleSubmitAnnotation = this.handleSubmitAnnotation.bind(this)
         this.updateInput = this.updateInput.bind(this)
@@ -97,7 +115,7 @@ class VideoAnnotator extends React.Component {
                     'Content-Type': 'application/json',
                     'Access-Control-Allow-Origin': '*',
                 },
-                body: JSON.stringify({ email: this.props.email, video_id: (this.props.video_id), ts: this.state.current_annotation_ts, content: this.state.current_annotation_content, video_title: this.state.video_title }),
+                body: JSON.stringify({ email: this.props.email, video_id: (this.state.video_id), ts: this.state.current_annotation_ts, content: this.state.current_annotation_content, video_title: this.state.video_title }),
             }
         ).then(handleFetchErrors)
             .then(response => {
@@ -160,7 +178,7 @@ class VideoAnnotator extends React.Component {
         return (
             <div>
                 <div>
-                    <YouTube videoId={this.props.video_id}
+                    <YouTube videoId={this.state.video_id}
                         opts={opts}
                         id={VIDEO_PLAYER_ID}
                         onReady={this.onReady}
@@ -189,4 +207,4 @@ class VideoAnnotator extends React.Component {
     }
 }
 
-export default VideoAnnotator;
+export default withRouter(VideoAnnotator);
