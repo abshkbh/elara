@@ -20,17 +20,6 @@ function handleFetchErrors(response) {
     return response;
 }
 
-// For now only Youtube videos are supported. Parse the Id of the video.
-function getYTVideoId(url) {
-    var regExp = /^.*(youtu\.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
-    var match = url.match(regExp);
-    if (match && match[2].length === 11) {
-        return match[2];
-    } else {
-        return ''
-    }
-}
-
 // |seconds| represents seconds in decimals in a string. For e.g. "2.3456" seconds or "120.12".
 // This function returns a string in "hh:mm:ss" (if hours > 0) or "mm:ss".
 function getPrettyTs(seconds) {
@@ -66,7 +55,7 @@ class VideoAnnotator extends React.Component {
             annotations: [],
             video_title: '',
         }
-        console.log("URL: " + this.props.url)
+        console.log("video_id: " + this.props.video_id)
         this.handleAddAnnotation = this.handleAddAnnotation.bind(this)
         this.handleSubmitAnnotation = this.handleSubmitAnnotation.bind(this)
         this.updateInput = this.updateInput.bind(this)
@@ -98,7 +87,6 @@ class VideoAnnotator extends React.Component {
     }
 
     handleSubmitAnnotation() {
-        let video_player = document.getElementById(VIDEO_PLAYER_ID);
         console.log('Submit Annotation Timestamp: ' + player.getCurrentTime() + " Annotation: " + this.state.current_annotation_content)
         let route_to_fetch = Constants.Server + "/add"
         console.log('Putting: ' + route_to_fetch)
@@ -109,7 +97,7 @@ class VideoAnnotator extends React.Component {
                     'Content-Type': 'application/json',
                     'Access-Control-Allow-Origin': '*',
                 },
-                body: JSON.stringify({ email: this.props.email, video_id: getYTVideoId(this.props.url), ts: this.state.current_annotation_ts, content: this.state.current_annotation_content, video_title: this.state.video_title }),
+                body: JSON.stringify({ email: this.props.email, video_id: (this.props.video_id), ts: this.state.current_annotation_ts, content: this.state.current_annotation_content, video_title: this.state.video_title }),
             }
         ).then(handleFetchErrors)
             .then(response => {
@@ -172,7 +160,7 @@ class VideoAnnotator extends React.Component {
         return (
             <div>
                 <div>
-                    <YouTube videoId={getYTVideoId(this.props.url)}
+                    <YouTube videoId={this.props.video_id}
                         opts={opts}
                         id={VIDEO_PLAYER_ID}
                         onReady={this.onReady}

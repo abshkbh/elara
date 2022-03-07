@@ -17,6 +17,16 @@ function handleFetchErrors(response) {
     return response;
 }
 
+// For now only Youtube videos are supported. Parse the Id of the video.
+function getYTVideoId(url) {
+    var regExp = /^.*(youtu\.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+    var match = url.match(regExp);
+    if (match && match[2].length === 11) {
+        return match[2];
+    } else {
+        return ''
+    }
+}
 
 class Session extends React.Component {
     constructor(props) {
@@ -100,7 +110,7 @@ class Session extends React.Component {
         console.log('In Session render user_videos: ' + this.state.user_videos)
         if (this.state.load_video) {
             console.log("Load Video")
-            return <VideoAnnotator url={this.state.video_url} email={this.props.email} />
+            return <VideoAnnotator video_id={getYTVideoId(this.state.video_url)} email={this.props.email} />
         }
 
         let user_videos;
