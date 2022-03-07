@@ -17,9 +17,10 @@ class UserVideos extends React.Component {
 
         const listItems = Object.entries(this.props.user_videos).map(([id, title]) => {
             console.log("id=" + id + "title=" + title)
+            // TODO: Figure out why "`" is needed for Link to work.
             return (
                 <li key={id}>
-                    <Link to={`/list/existing/${id}`}>{title}</Link>
+                    <Link to={`/list/existing/${this.props.email}/${id}`}>{title}</Link>
                 </li>
             )
         }

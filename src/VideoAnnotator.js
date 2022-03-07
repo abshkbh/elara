@@ -56,14 +56,22 @@ export function withRouter(Children) {
 class VideoAnnotator extends React.Component {
     constructor(props) {
         super(props)
-        // The `video_id` can come from either pressing "Submit" from Session or as a "Link" from
-        // UserVideos. Both these cases pass `video_id` in a different way.
+        // The `video_id` or `email` can come from Session or as a "Link" from UserVideos. Both
+        // these cases pass paramateres in a different way.
         let video_id;
         if (typeof this.props.video_id !== 'undefined') {
             video_id = this.props.video_id
         } else {
             video_id = this.props.match.params.video_id
         }
+
+        let email;
+        if (typeof this.props.email !== 'undefined') {
+            email = this.props.video_id
+        } else {
+            email = this.props.match.params.email
+        }
+
         this.state = {
             show_annotation_input: false,
             current_annotation_content: '',
@@ -72,8 +80,10 @@ class VideoAnnotator extends React.Component {
             annotations: [],
             video_title: '',
             video_id: video_id,
+            email: email,
         }
         console.log("video_id: " + this.state.video_id)
+        console.log("email: " + this.state.email)
         this.handleAddAnnotation = this.handleAddAnnotation.bind(this)
         this.handleSubmitAnnotation = this.handleSubmitAnnotation.bind(this)
         this.updateInput = this.updateInput.bind(this)
@@ -115,7 +125,7 @@ class VideoAnnotator extends React.Component {
                     'Content-Type': 'application/json',
                     'Access-Control-Allow-Origin': '*',
                 },
-                body: JSON.stringify({ email: this.props.email, video_id: (this.state.video_id), ts: this.state.current_annotation_ts, content: this.state.current_annotation_content, video_title: this.state.video_title }),
+                body: JSON.stringify({ email: this.state.email, video_id: (this.state.video_id), ts: this.state.current_annotation_ts, content: this.state.current_annotation_content, video_title: this.state.video_title }),
             }
         ).then(handleFetchErrors)
             .then(response => {
@@ -124,6 +134,7 @@ class VideoAnnotator extends React.Component {
             }
             )
             .then(data => {
+                // TODO: This returns data not found even when it's successful.
                 console.log("submit annotation data: ", data)
                 this.setState({
                     annotations: this.state.annotations.concat({ "ts": this.state.current_annotation_ts, "content": this.state.current_annotation_content }),
