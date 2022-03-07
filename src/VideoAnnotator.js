@@ -87,7 +87,6 @@ class VideoAnnotator extends React.Component {
         this.handleAddAnnotation = this.handleAddAnnotation.bind(this)
         this.handleSubmitAnnotation = this.handleSubmitAnnotation.bind(this)
         this.updateInput = this.updateInput.bind(this)
-        this.getYTVideoURLAtTs = this.getYTVideoURLAtTs.bind(this)
         this.seekVideo = this.seekVideo.bind(this)
         this.onReady = this.onReady.bind(this)
     }
@@ -146,11 +145,6 @@ class VideoAnnotator extends React.Component {
             .catch(error => {
                 console.log("Submit annotation error: " + error)
             })
-    }
-
-    getYTVideoURLAtTs(ts) {
-        console.log(this.props.url + "&t=" + Math.round(ts) + "s")
-        return this.props.url + "&t=" + Math.round(ts) + "s"
     }
 
     seekVideo(ts) {
