@@ -67,7 +67,7 @@ class VideoAnnotator extends React.Component {
 
         let email;
         if (typeof this.props.email !== 'undefined') {
-            email = this.props.video_id
+            email = this.props.email
         } else {
             email = this.props.match.params.email
         }
@@ -77,6 +77,9 @@ class VideoAnnotator extends React.Component {
             current_annotation_content: '',
             current_annotation_ts: '',
             player: null,
+            // TODO: This is a list of "annotation" objects like {"time_stamp" : "123.45",
+            // "content": "Hello"}. The keys for now have to map what the backend has. We should
+            // decouple this by using a "map" operator in `loadExistingAnnotations`.
             annotations: [],
             video_title: '',
             video_id: video_id,
@@ -89,6 +92,12 @@ class VideoAnnotator extends React.Component {
         this.updateInput = this.updateInput.bind(this)
         this.seekVideo = this.seekVideo.bind(this)
         this.onReady = this.onReady.bind(this)
+        this.loadExistingAnnotations = this.loadExistingAnnotations.bind(this)
+    }
+
+    componentDidMount() {
+        console.log('componentDidMount')
+        this.loadExistingAnnotations()
     }
 
     updateInput(e) {
@@ -103,6 +112,36 @@ class VideoAnnotator extends React.Component {
         } else {
             console.log("Unrecognized input field")
         }
+    }
+
+    loadExistingAnnotations() {
+        console.log('loadExistingAnnotations')
+        let route_to_fetch = Constants.Server + "/annotations?email=" + this.state.email + "&video_id=" + this.state.video_id
+        console.log('Fetching: ' + route_to_fetch)
+        fetch(route_to_fetch,
+            {
+                method: 'GET',
+                headers: {
+                    'Access-Control-Allow-Origin': '*',
+                },
+            }
+        ).then(handleFetchErrors)
+            .then(response => {
+                console.log("loadExistingAnnotations response: ", response)
+                return response.json()
+            }
+            )
+            .then(data => {
+                console.log("loadExistingAnnotations data: ", data)
+                this.setState(
+                    {
+                        annotations: data.annotations,
+                    }
+                )
+            })
+            .catch(error => {
+                console.log("Request error: " + error)
+            })
     }
 
     handleAddAnnotation() {
@@ -136,7 +175,7 @@ class VideoAnnotator extends React.Component {
                 // TODO: This returns data not found even when it's successful.
                 console.log("submit annotation data: ", data)
                 this.setState({
-                    annotations: this.state.annotations.concat({ "ts": this.state.current_annotation_ts, "content": this.state.current_annotation_content }),
+                    annotations: this.state.annotations.concat({ "time_stamp": this.state.current_annotation_ts, "content": this.state.current_annotation_content }),
                     show_annotation_input: false,
                     current_annotation_content: '',
                     current_annotation_ts: '',
@@ -175,8 +214,8 @@ class VideoAnnotator extends React.Component {
         }
 
         // TODO: Pull <li> in a separate component.
-        const annotations = this.state.annotations.map((annotation) => <li key={annotation.ts.toString()} onClick={() => this.seekVideo(annotation.ts)}>
-            <a href="#">{getPrettyTs(annotation.ts)}</a>
+        const annotations = this.state.annotations.map((annotation) => <li key={annotation.time_stamp.toString()} onClick={() => this.seekVideo(annotation.time_stamp)}>
+            <a href="#">{getPrettyTs(annotation.time_stamp)}</a>
             {"- " + annotation.content}
         </li>)
 
