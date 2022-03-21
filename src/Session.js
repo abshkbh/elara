@@ -77,7 +77,7 @@ class Session extends React.Component {
 
     loadUserVideos() {
         console.log('loadUserVideos')
-        let route_to_fetch = Constants.Server + "/list?email=" + this.props.email
+        let route_to_fetch = Constants.Server + "/list"
         console.log('Fetching: ' + route_to_fetch)
         fetch(route_to_fetch,
             {

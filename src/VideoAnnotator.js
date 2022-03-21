@@ -116,7 +116,7 @@ class VideoAnnotator extends React.Component {
 
     loadExistingAnnotations() {
         console.log('loadExistingAnnotations')
-        let route_to_fetch = Constants.Server + "/annotations?email=" + this.state.email + "&video_id=" + this.state.video_id
+        let route_to_fetch = Constants.Server + "/annotations?video_id=" + this.state.video_id
         console.log('Fetching: ' + route_to_fetch)
         fetch(route_to_fetch,
             {
@@ -163,7 +163,7 @@ class VideoAnnotator extends React.Component {
                     'Content-Type': 'application/json',
                     'Access-Control-Allow-Origin': '*',
                 },
-                body: JSON.stringify({ email: this.state.email, video_id: (this.state.video_id), ts: this.state.current_annotation_ts, content: this.state.current_annotation_content, video_title: this.state.video_title }),
+                body: JSON.stringify({ video_id: (this.state.video_id), ts: this.state.current_annotation_ts, content: this.state.current_annotation_content, video_title: this.state.video_title }),
             }
         ).then(handleFetchErrors)
             .then(response => {
