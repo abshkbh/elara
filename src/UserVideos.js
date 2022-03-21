@@ -20,7 +20,7 @@ class UserVideos extends React.Component {
             // TODO: Figure out why "`" is needed for Link to work.
             return (
                 <li key={id}>
-                    <Link to={`/list/existing/${this.props.email}/${id}`}>{title}</Link>
+                    <Link to={`/list/existing/${id}`}>{title}</Link>
                 </li>
             )
         }
