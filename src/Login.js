@@ -4,7 +4,6 @@ import Button from '@material-ui/core/Button';
 import Constants from './Constants.js';
 import './Login.css';
 import Session from './Session.js';
-import Cookie from 'universal-cookie';
 
 const USERNAME_TEXT = "Username"
 const USERNAME_ID = "username"
@@ -59,7 +58,8 @@ class Login extends React.Component {
                     'Content-Type': 'application/json',
                     'Access-Control-Allow-Origin': '*',
                 },
-                credentials: "same-origin",
+                credentials: "include",
+                mode: "cors",
                 body: JSON.stringify({ email: this.state.user_email, password: this.state.user_password }),
             }
         ).then(handleFetchErrors)
@@ -83,6 +83,35 @@ class Login extends React.Component {
             .catch(error => {
                 console.log("Login error: " + error)
             })
+
+        /*
+        console.log('2nd request')
+        fetch(route_to_fetch,
+            {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': '*',
+                },
+                //credentials: "include",
+                withCredentials: true,
+                body: JSON.stringify({ email: this.state.user_email, password: this.state.user_password }),
+            }
+        ).then(handleFetchErrors)
+            .then(response => {
+                console.log("login response: ", response, " cookie: ", response.headers.get('Set-Cookie'))
+                
+                return response.json()
+            }
+            )
+            .then(data => {
+                // TODO: This returns data not found even when it's successful.
+                console.log("login data: ", data)
+            })
+            .catch(error => {
+                console.log("Login error: " + error)
+            })
+            */
     }
 
     render() {
