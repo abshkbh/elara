@@ -28,6 +28,7 @@ class Login extends React.Component {
 
         this.updateInput = this.updateInput.bind(this)
         this.handleSubmit = this.handleSubmit.bind(this)
+        this.makeGetCall = this.makeGetCall.bind(this)
     }
 
     updateInput(e) {
@@ -47,6 +48,35 @@ class Login extends React.Component {
         }
     }
 
+    makeGetCall() {
+        console.log('makeGetCall')
+        let route_to_fetch = Constants.Server + "/list"
+        console.log('Fetching: ' + route_to_fetch)
+        fetch(route_to_fetch,
+            {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': 'true',
+                },
+                credentials: "include",
+                mode: "cors",
+                withCredentials: true
+            }
+        ).then(handleFetchErrors)
+            .then(response => {
+                return response.json()
+            }
+            )
+            .then(data => {
+                // TODO: This returns data not found even when it's successful.
+                console.log("login data: ", data)
+            })
+            .catch(error => {
+                console.log("Login error: " + error)
+            })
+    }
+
     handleSubmit() {
         console.log('handleSubmit')
         let route_to_fetch = Constants.Server + "/login"
@@ -56,62 +86,26 @@ class Login extends React.Component {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Access-Control-Allow-Origin': '*',
+                    'Access-Control-Allow-Origin': 'true',
                 },
                 credentials: "include",
                 mode: "cors",
-                body: JSON.stringify({ email: this.state.user_email, password: this.state.user_password }),
-            }
-        ).then(handleFetchErrors)
-            .then(response => {
-                console.log("login response: ", response, " cookie: ", response.headers.get('Set-Cookie'))
-                /*
-                let cookie = new Cookie()
-                let session_cookie = cookie.get('session')
-                console.log("Sessions cookie: ", session_cookie)
-                */
-                return response.json()
-            }
-            )
-            .then(data => {
-                // TODO: This returns data not found even when it's successful.
-                console.log("login data: ", data)
-                this.setState({
-                    session_started: true
-                })
-            })
-            .catch(error => {
-                console.log("Login error: " + error)
-            })
-
-        /*
-        console.log('2nd request')
-        fetch(route_to_fetch,
-            {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Access-Control-Allow-Origin': '*',
-                },
-                //credentials: "include",
                 withCredentials: true,
-                body: JSON.stringify({ email: this.state.user_email, password: this.state.user_password }),
+                body: JSON.stringify({ email: this.state.user_email, password: this.state.user_password })
             }
         ).then(handleFetchErrors)
             .then(response => {
-                console.log("login response: ", response, " cookie: ", response.headers.get('Set-Cookie'))
-                
                 return response.json()
             }
             )
             .then(data => {
                 // TODO: This returns data not found even when it's successful.
                 console.log("login data: ", data)
+                this.makeGetCall()
             })
             .catch(error => {
                 console.log("Login error: " + error)
             })
-            */
     }
 
     render() {
