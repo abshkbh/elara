@@ -72,6 +72,8 @@ class Login extends React.Component {
             .then(data => {
                 // TODO: This returns data not found even when it's successful.
                 console.log("login data: ", data)
+
+                // Login succeeded, start the session component.
                 this.setState({
                     session_started: true
                 })

@@ -3,12 +3,14 @@ import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import Constants from './Constants.js';
 import VideoAnnotator from './VideoAnnotator.js';
+import { Navigate } from 'react-router-dom';
 import './Session.css';
 import UserVideos from './UserVideos.js';
 
 const URL_TEXT = "URL"
 const URL_ID = "url"
 const LOAD_VIDEO_TEXT = "LOAD VIDEO"
+const LOGOUT_TEXT = "Logout"
 
 function handleFetchErrors(response) {
     if (!response.ok) {
@@ -36,11 +38,13 @@ class Session extends React.Component {
             load_video: false,
             user_videos: [],
             loading_existing_videos_list: true,
+            logout: false,
         }
 
         this.updateInput = this.updateInput.bind(this)
         this.handleLoadVideo = this.handleLoadVideo.bind(this)
         this.loadUserVideos = this.loadUserVideos.bind(this)
+        this.handleLogout = this.handleLogout.bind(this)
     }
 
     updateInput(e) {
@@ -110,8 +114,46 @@ class Session extends React.Component {
             })
     }
 
+    handleLogout() {
+        console.log('handleLogout')
+        let route_to_fetch = Constants.Server + "/logout"
+        console.log('Fetching: ' + route_to_fetch)
+        fetch(route_to_fetch,
+            {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': 'true',
+                },
+                credentials: "include",
+                mode: "cors",
+                withCredentials: true
+            }
+        ).then(handleFetchErrors)
+            .then(response => {
+                console.log("handleLogout response: ", response)
+                return response.json()
+            }
+            )
+            .then(data => {
+                console.log("handleLogout data: ", data)
+                this.setState(
+                    {
+                        logout: true
+                    }
+                )
+            })
+            .catch(error => {
+                console.log("Request error: " + error)
+            })
+    }
+
     render() {
         console.log('In Session render user_videos: ' + this.state.user_videos)
+        if (this.state.logout) {
+            return <Navigate to="/" end />
+        }
+
         if (this.state.load_video) {
             console.log("Load Video")
             return <VideoAnnotator email={this.props.email} video_id={getYTVideoId(this.state.video_url)} />
@@ -141,7 +183,12 @@ class Session extends React.Component {
                 <div>
                     {user_videos}
                 </div>
-            </div>
+                <div>
+                    <Button onClick={() => this.handleLogout()}>
+                        {LOGOUT_TEXT}
+                    </Button>
+                </div>
+            </div >
         );
 
     }
