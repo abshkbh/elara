@@ -4,11 +4,17 @@ import Button from '@material-ui/core/Button';
 import Constants from './Constants.js';
 import './Login.css';
 import Session from './Session.js';
+import { GoogleLogin } from 'react-google-login';
 
 const USERNAME_TEXT = "Username"
 const USERNAME_ID = "username"
 const PASSWORD_TEXT = "Password"
 const PASSWORD_ID = "password"
+
+const failureResponseGoogle = (response) => {
+    console.log('Google OAuth Failure')
+    console.log(response)
+}
 
 function handleFetchErrors(response) {
     if (!response.ok) {
@@ -28,6 +34,7 @@ class Login extends React.Component {
 
         this.updateInput = this.updateInput.bind(this)
         this.handleSubmit = this.handleSubmit.bind(this)
+        this.handleGoogleOauthSuccess = this.handleGoogleOauthSuccess.bind(this)
     }
 
     updateInput(e) {
@@ -45,6 +52,42 @@ class Login extends React.Component {
         } else {
             console.log("Unrecognized input field")
         }
+    }
+
+    handleGoogleOauthSuccess(response) {
+        console.log('OAuth Success')
+        console.log(response);
+        let route_to_fetch = Constants.Server + "/oauth/google/login"
+        console.log('Posting to: ' + route_to_fetch)
+        fetch(route_to_fetch,
+            {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': 'true',
+                },
+                credentials: "include",
+                mode: "cors",
+                withCredentials: true,
+                body: JSON.stringify({ token: response.tokenId }),
+            }
+        ).then(handleFetchErrors)
+            .then(response => {
+                console.log("Google Oauth Login Response: ", response)
+                return response.json()
+            }
+            )
+            .then(data => {
+                // TODO: This returns data not found even when it's successful.
+                console.log("Google Oauth Login Data: ", data)
+                this.setState({
+                    session_started: true
+                })
+            }
+            )
+            .catch(error => {
+                console.log("Google Ooauth Login Error: " + error)
+            })
     }
 
     handleSubmit() {
@@ -101,6 +144,15 @@ class Login extends React.Component {
                     onChange={this.updateInput} value={this.state.game_password} />
                 <div className="submit">
                     <Button variant="contained" onClick={() => this.handleSubmit()}>Login</Button>
+                </div>
+                <div className="oauth">
+                    <GoogleLogin
+                        clientId="719051941242-1ar5albdc3l4tjplt563f0f405o8h2u3.apps.googleusercontent.com"
+                        buttonText="Login With Google"
+                        onSuccess={this.handleGoogleOauthSuccess}
+                        onFailure={failureResponseGoogle}
+                        cookiePolicy={'single_host_origin'}
+                    />
                 </div>
             </div>
         );
