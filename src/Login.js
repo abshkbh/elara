@@ -32,6 +32,9 @@ class Login extends React.Component {
         this.state = {
             user_email: '',
             user_password: '',
+
+            // When this is set to true, the user is authenticated by the backend and we render the
+            // |Session| component.
             session_started: false,
         }
 
