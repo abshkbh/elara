@@ -14,6 +14,7 @@ const VIDEO_PLAYER_ID = "video-player"
 // TODO: Figure out a way to make this part of |state|.
 let player = null
 
+// Takes in a HTTP |response| and throws an error if it's not 200 else returns |response| as is.
 function handleFetchErrors(response) {
     if (!response.ok) {
         throw Error(response.statusText);
@@ -53,6 +54,11 @@ export function withRouter(Children) {
     }
 }
 
+// This component -
+// - Loads a Youtube player with the given |video_id|.
+// - Displays any existing annotations for the video.
+// - Let's the user add new annotations to the video which are persisted on the backend and
+//   reflected in this component.
 class VideoAnnotator extends React.Component {
     constructor(props) {
         super(props)
@@ -73,16 +79,30 @@ class VideoAnnotator extends React.Component {
         }
 
         this.state = {
+            // This controls whether the text box to enter a new annotation should be shown or not.
             show_annotation_input: false,
+
+            // The content of a new annotation being added by the user.
             current_annotation_content: '',
+
+            // The timestamp of a new annotation being added by the user.
             current_annotation_ts: '',
+
+            // The handle to the embedded Youtube player associated with a video.
             player: null,
+
             // TODO: This is a list of "annotation" objects like {"time_stamp" : "123.45",
             // "content": "Hello"}. The keys for now have to map what the backend has. We should
             // decouple this by using a "map" operator in `loadExistingAnnotations`.
             annotations: [],
+
+            // The tile of the video being annotated.
             video_title: '',
+
+            // The id of the video being annotated.
             video_id: video_id,
+
+            // The email of the user annotating the video.
             email: email,
         }
         console.log("video_id: " + this.state.video_id)
@@ -96,10 +116,12 @@ class VideoAnnotator extends React.Component {
     }
 
     componentDidMount() {
+        // When the component mounts load any existing annotations associated with the video.
         console.log('componentDidMount')
         this.loadExistingAnnotations()
     }
 
+    // Updates the text input values associated with this component.
     updateInput(e) {
         console.log('updateInput')
         const value = e.target.value
@@ -114,6 +136,7 @@ class VideoAnnotator extends React.Component {
         }
     }
 
+    // Queries the backend for existing annotations associated with the video.
     loadExistingAnnotations() {
         console.log('loadExistingAnnotations')
         let route_to_fetch = Constants.Server + "/annotations?video_id=" + this.state.video_id
@@ -148,7 +171,10 @@ class VideoAnnotator extends React.Component {
             })
     }
 
+    // Handles the button click corresponding to the user wanting to add a new annotation.
     handleAddAnnotation() {
+        // Set state to show the text box to let the user add the annotation. Also record the
+        // timestamp associated with the annotation.
         console.log('Current Timestamp: ' + player.getCurrentTime() + 's')
         this.setState({
             current_annotation_ts: player.getCurrentTime().toString(),
@@ -156,6 +182,9 @@ class VideoAnnotator extends React.Component {
         })
     }
 
+    // Called in response to submitting an annotation, it sends the annotation metadata to the
+    // backend. On a successful reply appends the annotation to |this.state.annotations| to reflect
+    // it in the UI.
     handleSubmitAnnotation() {
         console.log('Submit Annotation Timestamp: ' + player.getCurrentTime() + " Annotation: " + this.state.current_annotation_content)
         let route_to_fetch = Constants.Server + "/add"
@@ -193,6 +222,7 @@ class VideoAnnotator extends React.Component {
             })
     }
 
+    // Seeks the video player to timestamp |ts|.
     seekVideo(ts) {
         console.log('In seekVideo ts: ' + ts)
         player.seekTo(Number.parseFloat(ts), true)
@@ -246,7 +276,7 @@ class VideoAnnotator extends React.Component {
     }
 
     onReady(event) {
-        // access to player in all event handlers via event.target
+        // Access to |player| in all event handlers via event.target
         //event.target.pauseVideo();
         console.log('onReady title: ' + event.target.getVideoData().title)
         this.setState(
