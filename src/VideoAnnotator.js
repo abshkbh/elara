@@ -62,20 +62,13 @@ export function withRouter(Children) {
 class VideoAnnotator extends React.Component {
     constructor(props) {
         super(props)
-        // The `video_id` or `email` can come from Session or as a "Link" from UserVideos. Both
-        // these cases pass paramateres in a different way.
+        // The `video_id` can come from Session or as a "Link" from UserVideos. Both these cases
+        // pass paramateres in a different way.
         let video_id;
         if (typeof this.props.video_id !== 'undefined') {
             video_id = this.props.video_id
         } else {
             video_id = this.props.match.params.video_id
-        }
-
-        let email;
-        if (typeof this.props.email !== 'undefined') {
-            email = this.props.email
-        } else {
-            email = this.props.match.params.email
         }
 
         this.state = {
@@ -101,12 +94,9 @@ class VideoAnnotator extends React.Component {
 
             // The id of the video being annotated.
             video_id: video_id,
-
-            // The email of the user annotating the video.
-            email: email,
         }
+
         console.log("video_id: " + this.state.video_id)
-        console.log("email: " + this.state.email)
         this.handleAddAnnotation = this.handleAddAnnotation.bind(this)
         this.handleSubmitAnnotation = this.handleSubmitAnnotation.bind(this)
         this.updateInput = this.updateInput.bind(this)

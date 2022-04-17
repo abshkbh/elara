@@ -136,7 +136,7 @@ class Session extends React.Component {
         console.log('In Session render user_videos: ' + this.state.user_videos)
         if (this.state.load_video) {
             console.log("Load Video")
-            return <VideoAnnotator email={this.props.email} video_id={getYTVideoId(this.state.video_url)} />
+            return <VideoAnnotator video_id={getYTVideoId(this.state.video_url)} />
         }
 
         let user_videos;
