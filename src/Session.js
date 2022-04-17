@@ -10,6 +10,7 @@ const URL_TEXT = "URL"
 const URL_ID = "url"
 const LOAD_VIDEO_TEXT = "LOAD VIDEO"
 
+// Takes in a HTTP |response| and throws an error if it's not 200 else returns |response| as is.
 function handleFetchErrors(response) {
     if (!response.ok) {
         throw Error(response.statusText);
@@ -17,7 +18,8 @@ function handleFetchErrors(response) {
     return response;
 }
 
-// For now only Youtube videos are supported. Parse the Id of the video.
+// For now only Youtube videos are supported. Parse the Id of the video. For e.g. for this Youtube
+// URL https://www.youtube.com/watch?v=TcAAARgLZ8M the video id will be "TcAAARgLZ8M".
 function getYTVideoId(url) {
     var regExp = /^.*(youtu\.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
     var match = url.match(regExp);
@@ -28,13 +30,24 @@ function getYTVideoId(url) {
     }
 }
 
+// This component is loaded after a user is logged in.
+//
+// It has an input to load a new video for annotation and also shows the list of vidoes annoatated
+// by the user.
 class Session extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
+            // URL of the video to annotate.
             video_url: '',
+
+            // When this is true, we render |VideoAnnotator| with |video_url| loaded.
             load_video: false,
+
+            // List of videos annoated by the user. This is populated after querying the backend.
             user_videos: [],
+
+            // This is true when |user_videos| are being retrieved by the backend.
             loading_existing_videos_list: true,
         }
 
@@ -43,6 +56,7 @@ class Session extends React.Component {
         this.loadUserVideos = this.loadUserVideos.bind(this)
     }
 
+    // Updates the text input values in this component.
     updateInput(e) {
         console.log('updateInput')
         const value = e.target.value
@@ -57,12 +71,14 @@ class Session extends React.Component {
         }
     }
 
+    // Once the component is mounted load a user's existing annotated videos.
     componentDidMount() {
         // Initialize user's existing videos from the server.
         // TODO: Is "this" required here.
         this.loadUserVideos()
     }
 
+    // Callback for the |LOAD_VIDEO_TEXT| button.
     handleLoadVideo() {
         console.log('handleLoadVideo url:' + this.state.video_url)
         if (!this.state.video_url || this.state.video_url === '') {
@@ -75,6 +91,7 @@ class Session extends React.Component {
         })
     }
 
+    // Queries the backend for a user's existing annotated videos.
     loadUserVideos() {
         console.log('loadUserVideos')
         let route_to_fetch = Constants.Server + "/list"
@@ -111,6 +128,11 @@ class Session extends React.Component {
     }
 
     render() {
+        // In the default state this Component shows an -
+        // - Input for a video URL and a load button to load it for annotation.
+        // - A list of existing annotated user videos.
+        //
+        // Once the load video button is clicked. We load the video in a |VideoAnnotator| component.
         console.log('In Session render user_videos: ' + this.state.user_videos)
         if (this.state.load_video) {
             console.log("Load Video")
