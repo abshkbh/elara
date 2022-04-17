@@ -11,11 +11,13 @@ const USERNAME_ID = "username"
 const PASSWORD_TEXT = "Password"
 const PASSWORD_ID = "password"
 
+// Callback for when Google OAuth fails.
 const failureResponseGoogle = (response) => {
     console.log('Google OAuth Failure')
     console.log(response)
 }
 
+// Takes in a HTTP |response| and throws an error if it's not 200 else returns |response| as is.
 function handleFetchErrors(response) {
     if (!response.ok) {
         throw Error(response.statusText);
@@ -23,6 +25,7 @@ function handleFetchErrors(response) {
     return response;
 }
 
+// This component authenticates a user in our app eithe by username and password or Google OAuth.
 class Login extends React.Component {
     constructor(props) {
         super(props)
@@ -37,6 +40,7 @@ class Login extends React.Component {
         this.handleGoogleOauthSuccess = this.handleGoogleOauthSuccess.bind(this)
     }
 
+    // Updates all the text input values.
     updateInput(e) {
         const value = e.target.value
         const id = e.target.id
@@ -54,6 +58,11 @@ class Login extends React.Component {
         }
     }
 
+    // Called when Google OAuth succeeds.
+    //
+    // It sends the token received from |response| to the backend. The backend returns success it's
+    // able to verify the token and login the user. In this case |session_started| is set to true.
+    // Else we log the error.
     handleGoogleOauthSuccess(response) {
         console.log('OAuth Success')
         console.log(response);
@@ -90,6 +99,10 @@ class Login extends React.Component {
             })
     }
 
+    // Called when the username and password are submitted to the backend.
+    //
+    // This functions sends the username and password to the backend. If the backend is able to
+    // successfully login the user, |session_started| is set to True. Else it logs the error.
     handleSubmit() {
         console.log('handleSubmit')
         let route_to_fetch = Constants.Server + "/login"
@@ -126,6 +139,7 @@ class Login extends React.Component {
 
     render() {
         console.log('In Login render')
+        // This means that the user is logged in. Start the session.
         if (this.state.session_started) {
             console.log("Session started");
             return <Session email={this.state.user_email} />
