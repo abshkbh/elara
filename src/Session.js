@@ -48,7 +48,7 @@ class Session extends React.Component {
             user_videos: [],
 
             // This is true when |user_videos| are being retrieved by the backend.
-            loading_existing_videos_list: true,
+            loading_user_videos: true,
         }
 
         this.updateInput = this.updateInput.bind(this)
@@ -118,7 +118,7 @@ class Session extends React.Component {
                 this.setState(
                     {
                         user_videos: data.user_videos,
-                        loading_existing_videos_list: false
+                        loading_user_videos: false
                     }
                 )
             })
@@ -140,7 +140,7 @@ class Session extends React.Component {
         }
 
         let user_videos;
-        if (this.state.loading_existing_videos_list) {
+        if (this.state.loading_user_videos) {
             user_videos = <p>Loading...</p>
         } else {
             user_videos = <UserVideos email={this.props.email} user_videos={this.state.user_videos} />
