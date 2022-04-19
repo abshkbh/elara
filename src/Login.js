@@ -6,10 +6,14 @@ import './Login.css';
 import Session from './Session.js';
 import { GoogleLogin } from 'react-google-login';
 
-const USERNAME_TEXT = "Username"
-const USERNAME_ID = "username"
+const USER_EMAIL_TEXT = "Email"
+const USER_EMAIL_ID = "email"
 const PASSWORD_TEXT = "Password"
 const PASSWORD_ID = "password"
+const MIN_USER_EMAIL_LENGTH = 7
+const MAX_USER_EMAIL_LENGTH = 50
+const MIN_USER_PASSWORD_LENGTH = 8
+const MAX_USER_PASSWORD_LENGTH = 35
 
 // Callback for when Google OAuth fails.
 const failureResponseGoogle = (response) => {
@@ -36,11 +40,51 @@ class Login extends React.Component {
             // When this is set to true, the user is authenticated by the backend and we render the
             // |Session| component.
             session_started: false,
+
+            // Input error message. Set when there is a problem in |user_email| or |user_password|.
+            error_msg: '',
         }
 
         this.updateInput = this.updateInput.bind(this)
         this.handleSubmit = this.handleSubmit.bind(this)
         this.handleGoogleOauthSuccess = this.handleGoogleOauthSuccess.bind(this)
+        this.validateEmail = this.validateEmail.bind(this)
+        this.validatePassword = this.validatePassword.bind(this);
+    }
+
+    validateEmail() {
+        if ((this.state.user_email.length < MIN_USER_EMAIL_LENGTH) || (this.state.user_email.length > MAX_USER_EMAIL_LENGTH)) {
+            this.setState(
+                {
+                    error_msg: 'Invalid email length'
+                }
+            )
+            return false;
+        }
+        return true;
+    }
+
+    validatePassword() {
+        if ((this.state.user_password.length < MIN_USER_PASSWORD_LENGTH) || (this.state.user_password.length > MAX_USER_PASSWORD_LENGTH)) {
+            this.setState(
+                {
+                    error_msg: 'Invalid password length'
+                }
+            )
+            return false;
+        }
+
+        const regex = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$")
+        if (!regex.test("^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$", this.state.user_password)) {
+            this.setState(
+                {
+                    error_msg: 'Password should have minimum eight characters, at least one uppercase letter, one lowercase letter, one number and one special character'
+                }
+            )
+            return false;
+        }
+
+        return true;
     }
 
     // Updates all the text input values.
@@ -48,7 +92,7 @@ class Login extends React.Component {
         const value = e.target.value
         const id = e.target.id
 
-        if (id === USERNAME_ID) {
+        if (id === USER_EMAIL_ID) {
             this.setState({
                 user_email: value
             })
@@ -107,6 +151,16 @@ class Login extends React.Component {
     // This functions sends the username and password to the backend. If the backend is able to
     // successfully login the user, |session_started| is set to True. Else it logs the error.
     handleSubmit() {
+        if (!this.validateEmail()) {
+            console.log("Invalid Email")
+            return;
+        }
+
+        if (!this.validatePassword()) {
+            console.log("Invalid Password")
+            return;
+        }
+
         console.log('handleSubmit')
         let route_to_fetch = Constants.Server + "/login"
         console.log('Fetching: ' + route_to_fetch)
@@ -148,11 +202,20 @@ class Login extends React.Component {
             return <Session email={this.state.user_email} />
         }
 
+
+        // If there is an error in one of the input fields. Notify the user via a UI element.
+        let input_error;
+        if (this.state.error_msg.length > 0) {
+            input_error = <p>{this.state.error_msg}</p>
+        } else {
+            input_error = <div />
+        }
+
         return (
             <div className="parent">
                 <h1>Elara</h1>
-                <label>{USERNAME_TEXT}</label>
-                <TextField id={USERNAME_ID} label={USERNAME_TEXT}
+                <label>{USER_EMAIL_TEXT}</label>
+                <TextField id={USER_EMAIL_ID} label={USER_EMAIL_TEXT}
                     variant="outlined"
                     onChange={this.updateInput}
                     value={this.state.player_name} />
@@ -170,6 +233,9 @@ class Login extends React.Component {
                         onFailure={failureResponseGoogle}
                         cookiePolicy={'single_host_origin'}
                     />
+                </div>
+                <div>
+                    {input_error}
                 </div>
             </div>
         );
