@@ -4,6 +4,7 @@ import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import Constants from './Constants.js';
 import { useParams } from 'react-router-dom';
+import Logout from './Logout.js';
 
 const ADD_ANNOTATION_TEXT = "ADD ANNOTATION"
 const ANNOTATION_ID = "annotation"
@@ -260,6 +261,9 @@ class VideoAnnotator extends React.Component {
                 </div>
                 <div>
                     <ul>{annotations}</ul>
+                </div>
+                <div>
+                    <Logout />
                 </div>
             </div>
         );

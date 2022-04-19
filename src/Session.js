@@ -5,6 +5,7 @@ import Constants from './Constants.js';
 import VideoAnnotator from './VideoAnnotator.js';
 import './Session.css';
 import UserVideos from './UserVideos.js';
+import Logout from './Logout.js';
 
 const URL_TEXT = "URL"
 const URL_ID = "url"
@@ -162,6 +163,9 @@ class Session extends React.Component {
                 </div>
                 <div>
                     {user_videos}
+                </div>
+                <div>
+                    <Logout />
                 </div>
             </div>
         );
