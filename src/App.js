@@ -2,6 +2,7 @@ import React from 'react';
 import Login from './Login.js';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import VideoAnnotator from './VideoAnnotator.js';
+import Session from './Session.js';
 
 // The parent component for the app.
 class App extends React.Component {
@@ -15,6 +16,7 @@ class App extends React.Component {
         <BrowserRouter>
           <Routes>
             <Route exact path="/" element={<Login />} />
+            <Route exact path="/session" element={<Session />} />
             <Route exact path="/list/existing/:video_id" element={<VideoAnnotator />} />
           </Routes>
         </BrowserRouter>

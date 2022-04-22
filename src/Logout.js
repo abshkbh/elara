@@ -1,6 +1,7 @@
 import React from 'react';
 import Button from '@material-ui/core/Button';
 import Constants from './Constants.js';
+import { useParams } from 'react-router-dom';
 
 const LOGOUT_BUTTON_TEXT = "Logout"
 
@@ -10,6 +11,14 @@ function handleFetchErrors(response) {
         throw Error(response.statusText);
     }
     return response;
+}
+
+export function withRouter(Children) {
+    return (props) => {
+
+        const match = { params: useParams() };
+        return <Children {...props} match={match} />
+    }
 }
 
 // This component implements the Logout mechanism.
@@ -63,4 +72,4 @@ class Logout extends React.Component {
     }
 }
 
-export default Logout;
+export default withRouter(Logout);

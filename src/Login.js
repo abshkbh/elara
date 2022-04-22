@@ -5,6 +5,7 @@ import Constants from './Constants.js';
 import './Login.css';
 import Session from './Session.js';
 import { GoogleLogin } from 'react-google-login';
+import { useParams, useLocation, useNavigate } from 'react-router-dom';
 
 const USER_EMAIL_TEXT = "Email"
 const USER_EMAIL_ID = "email"
@@ -29,6 +30,23 @@ function handleFetchErrors(response) {
     return response;
 }
 
+export function withRouter(Component) {
+    function ComponentWithRouterProp(props) {
+        let location = useLocation();
+        let navigate = useNavigate();
+        let params = useParams();
+        return (
+            <Component
+                {...props}
+                router={{ location, navigate, params }}
+            />
+        );
+    }
+
+    return ComponentWithRouterProp;
+}
+
+
 // This component authenticates a user in our app eithe by username and password or Google OAuth.
 class Login extends React.Component {
     constructor(props) {
@@ -36,10 +54,6 @@ class Login extends React.Component {
         this.state = {
             user_email: '',
             user_password: '',
-
-            // When this is set to true, the user is authenticated by the backend and we render the
-            // |Session| component.
-            session_started: false,
 
             // Input error message. Set when there is a problem in |user_email| or |user_password|.
             error_msg: '',
@@ -65,6 +79,7 @@ class Login extends React.Component {
     }
 
     validatePassword() {
+        /*
         if ((this.state.user_password.length < MIN_USER_PASSWORD_LENGTH) || (this.state.user_password.length > MAX_USER_PASSWORD_LENGTH)) {
             this.setState(
                 {
@@ -83,6 +98,7 @@ class Login extends React.Component {
             )
             return false;
         }
+        */
 
         return true;
     }
@@ -185,9 +201,10 @@ class Login extends React.Component {
             .then(data => {
                 // TODO: This returns data not found even when it's successful.
                 console.log("login data: ", data)
-                this.setState({
-                    session_started: true
-                })
+                // This means that the user is logged in. Start the session by navigating to it's
+                // route.
+                console.log("Navigating to Session")
+                this.props.router.navigate("/session")
             })
             .catch(error => {
                 console.log("Login error: " + error)
@@ -196,13 +213,6 @@ class Login extends React.Component {
 
     render() {
         console.log('In Login render')
-        // This means that the user is logged in. Start the session.
-        if (this.state.session_started) {
-            console.log("Session started");
-            return <Session email={this.state.user_email} />
-        }
-
-
         // If there is an error in one of the input fields. Notify the user via a UI element.
         let input_error;
         if (this.state.error_msg.length > 0) {
@@ -242,4 +252,4 @@ class Login extends React.Component {
     }
 }
 
-export default Login;
+export default withRouter(Login);
