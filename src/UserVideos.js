@@ -22,6 +22,7 @@ class UserVideos extends React.Component {
         const listItems = Object.entries(this.props.user_videos).map(([id, title]) => {
             console.log("id=" + id + "title=" + title)
             // TODO: Figure out why "`" is needed for Link to work.
+            // TODO: Figure out how to use Constants.VIDEO_ANNOTATOR_BASE_URL here.
             return (
                 <li key={id}>
                     <Link to={`/annotate/${id}`}>{title}</Link>

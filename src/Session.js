@@ -2,7 +2,6 @@ import React from 'react';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import Constants from './Constants.js';
-import VideoAnnotator from './VideoAnnotator.js';
 import './Session.css';
 import UserVideos from './UserVideos.js';
 import Logout from './Logout.js';
@@ -101,7 +100,7 @@ class Session extends React.Component {
             return
         }
 
-        this.props.router.navigate("/annotate/" + getYTVideoId(this.state.video_url))
+        this.props.router.navigate(Constants.VIDEO_ANNOTATOR_BASE_ROUTE + "/" + getYTVideoId(this.state.video_url))
     }
 
     // Queries the backend for a user's existing annotated videos.
