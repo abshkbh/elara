@@ -79,7 +79,6 @@ class Login extends React.Component {
     }
 
     validatePassword() {
-        /*
         if ((this.state.user_password.length < MIN_USER_PASSWORD_LENGTH) || (this.state.user_password.length > MAX_USER_PASSWORD_LENGTH)) {
             this.setState(
                 {
@@ -98,7 +97,6 @@ class Login extends React.Component {
             )
             return false;
         }
-        */
 
         return true;
     }
