@@ -1,7 +1,7 @@
 import React from 'react';
 import Button from '@material-ui/core/Button';
 import Constants from './Constants.js';
-import { useParams } from 'react-router-dom';
+import { useParams, useLocation, useNavigate } from 'react-router-dom';
 
 const LOGOUT_BUTTON_TEXT = "Logout"
 
@@ -13,12 +13,20 @@ function handleFetchErrors(response) {
     return response;
 }
 
-export function withRouter(Children) {
-    return (props) => {
-
-        const match = { params: useParams() };
-        return <Children {...props} match={match} />
+export function withRouter(Component) {
+    function ComponentWithRouterProp(props) {
+        let location = useLocation();
+        let navigate = useNavigate();
+        let params = useParams();
+        return (
+            <Component
+                {...props}
+                router={{ location, navigate, params }}
+            />
+        );
     }
+
+    return ComponentWithRouterProp;
 }
 
 // This component implements the Logout mechanism.
@@ -53,6 +61,7 @@ class Logout extends React.Component {
             .then(data => {
                 // TODO: This returns data not found even when it's successful.
                 console.log("Logout Data: ", data)
+                this.props.router.navigate("/")
             }
             )
             .catch(error => {

@@ -6,6 +6,7 @@ import VideoAnnotator from './VideoAnnotator.js';
 import './Session.css';
 import UserVideos from './UserVideos.js';
 import Logout from './Logout.js';
+import { useParams, useLocation, useNavigate } from 'react-router-dom';
 
 const URL_TEXT = "URL"
 const URL_ID = "url"
@@ -29,6 +30,22 @@ function getYTVideoId(url) {
     } else {
         return ''
     }
+}
+
+export function withRouter(Component) {
+    function ComponentWithRouterProp(props) {
+        let location = useLocation();
+        let navigate = useNavigate();
+        let params = useParams();
+        return (
+            <Component
+                {...props}
+                router={{ location, navigate, params }}
+            />
+        );
+    }
+
+    return ComponentWithRouterProp;
 }
 
 // This component is loaded after a user is logged in.
@@ -173,4 +190,4 @@ class Session extends React.Component {
     }
 }
 
-export default Session;
+export default withRouter(Session);
