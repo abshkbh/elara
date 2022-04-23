@@ -127,7 +127,7 @@ class Login extends React.Component {
     handleGoogleOauthSuccess(response) {
         console.log('OAuth Success')
         console.log(response);
-        let route_to_fetch = Constants.Server + "/oauth/google/login"
+        let route_to_fetch = Constants.Server + Constants.SERVER_ROUTE_GOOGLE_OAUTH_LOGIN
         console.log('Posting to: ' + route_to_fetch)
         fetch(route_to_fetch,
             {
@@ -176,7 +176,7 @@ class Login extends React.Component {
         }
 
         console.log('handleSubmit')
-        let route_to_fetch = Constants.Server + "/login"
+        let route_to_fetch = Constants.Server + Constants.SERVER_ROUTE_PASSWORD_LOGIN
         console.log('Fetching: ' + route_to_fetch)
         fetch(route_to_fetch,
             {
