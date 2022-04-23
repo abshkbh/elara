@@ -39,7 +39,7 @@ class Logout extends React.Component {
     // Handles the logout button click by sending a request to the backend.
     handleLogout() {
         console.log('handleLogout')
-        let route_to_fetch = Constants.Server + Constants.SERVER_ROUTE_LOGOUT
+        let route_to_fetch = Constants.SERVER + Constants.SERVER_ROUTE_LOGOUT
         console.log('Posting to: ' + route_to_fetch)
         fetch(route_to_fetch,
             {

@@ -131,7 +131,7 @@ class VideoAnnotator extends React.Component {
     // Queries the backend for existing annotations associated with the video.
     loadExistingAnnotations() {
         console.log('loadExistingAnnotations')
-        let route_to_fetch = Constants.Server + Constants.SERVER_ROUTE_ANNOTATIONS + "?video_id=" + this.state.video_id
+        let route_to_fetch = Constants.SERVER + Constants.SERVER_ROUTE_ANNOTATIONS + "?video_id=" + this.state.video_id
         console.log('Fetching: ' + route_to_fetch)
         fetch(route_to_fetch,
             {
@@ -179,7 +179,7 @@ class VideoAnnotator extends React.Component {
     // it in the UI.
     handleSubmitAnnotation() {
         console.log('Submit Annotation Timestamp: ' + player.getCurrentTime() + " Annotation: " + this.state.current_annotation_content)
-        let route_to_fetch = Constants.Server + Constants.SERVER_ROUTE_ADD_ANNOTATION
+        let route_to_fetch = Constants.SERVER + Constants.SERVER_ROUTE_ADD_ANNOTATION
         console.log('Putting: ' + route_to_fetch)
         fetch(route_to_fetch,
             {

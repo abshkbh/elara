@@ -106,7 +106,7 @@ class Session extends React.Component {
     // Queries the backend for a user's existing annotated videos.
     loadUserVideos() {
         console.log('loadUserVideos')
-        let route_to_fetch = Constants.Server + Constants.SERVER_ROUTE_LIST
+        let route_to_fetch = Constants.SERVER + Constants.SERVER_ROUTE_LIST
         console.log('Fetching: ' + route_to_fetch)
         fetch(route_to_fetch,
             {
