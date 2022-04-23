@@ -202,7 +202,7 @@ class Login extends React.Component {
                 // This means that the user is logged in. Start the session by navigating to it's
                 // route.
                 console.log("Navigating to Session")
-                this.props.router.navigate(Constants.SESSION_ROUTE)
+                this.props.router.navigate(Constants.APP_ROUTE_SESSION)
             })
             .catch(error => {
                 console.log("Login error: " + error)

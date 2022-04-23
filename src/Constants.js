@@ -5,10 +5,12 @@ export default {
     // Base URL to load a Youtube embedded player.
     YT_WATCH_URL: "http://www.youtube.com/watch?v=",
 
-
-    LOGIN_ROUTE: "/",
-    SESSION_ROUTE: "/session",
-    VIDEO_ANNOTATOR_BASE_ROUTE: "/annotate",
+    // React Router path for the |Login| component.
+    APP_ROUTE_LOGIN: "/",
+    // React Router path for the |Session| component.
+    APP_ROUTE_SESSION: "/session",
+    // React Router path for the |VideoAnnotator| component.
+    APP_ROUTE_VIDEO_ANNOTATOR: "/annotate",
 
     // Server route to hit for Google OAuth login.
     SERVER_ROUTE_GOOGLE_OAUTH_LOGIN: "/oauth/google/login",

@@ -61,7 +61,7 @@ class Logout extends React.Component {
             .then(data => {
                 // TODO: This returns data not found even when it's successful.
                 console.log("Logout Data: ", data)
-                this.props.router.navigate("/")
+                this.props.router.navigate(Constants.APP_ROUTE_LOGIN)
             }
             )
             .catch(error => {

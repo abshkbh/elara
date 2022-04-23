@@ -16,9 +16,9 @@ class App extends React.Component {
       < div className="App" >
         <BrowserRouter>
           <Routes>
-            <Route exact path={Constants.LOGIN_ROUTE} element={<Login />} />
-            <Route exact path={Constants.SESSION_ROUTE} element={<Session />} />
-            <Route exact path={Constants.VIDEO_ANNOTATOR_BASE_ROUTE + "/:video_id"} element={<VideoAnnotator />} />
+            <Route exact path={Constants.APP_ROUTE_LOGIN} element={<Login />} />
+            <Route exact path={Constants.APP_ROUTE_SESSION} element={<Session />} />
+            <Route exact path={Constants.APP_ROUTE_VIDEO_ANNOTATOR + "/:video_id"} element={<VideoAnnotator />} />
           </Routes>
         </BrowserRouter>
       </div >

@@ -100,7 +100,7 @@ class Session extends React.Component {
             return
         }
 
-        this.props.router.navigate(Constants.VIDEO_ANNOTATOR_BASE_ROUTE + "/" + getYTVideoId(this.state.video_url))
+        this.props.router.navigate(Constants.APP_ROUTE_VIDEO_ANNOTATOR + "/" + getYTVideoId(this.state.video_url))
     }
 
     // Queries the backend for a user's existing annotated videos.
