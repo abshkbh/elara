@@ -59,9 +59,6 @@ class Session extends React.Component {
             // URL of the video to annotate.
             video_url: '',
 
-            // When this is true, we render |VideoAnnotator| with |video_url| loaded.
-            load_video: false,
-
             // List of videos annoated by the user. This is populated after querying the backend.
             user_videos: [],
 
@@ -104,9 +101,7 @@ class Session extends React.Component {
             return
         }
 
-        this.setState({
-            load_video: true
-        })
+        this.props.router.navigate("/annotate/" + getYTVideoId(this.state.video_url))
     }
 
     // Queries the backend for a user's existing annotated videos.
@@ -152,10 +147,6 @@ class Session extends React.Component {
         //
         // Once the load video button is clicked. We load the video in a |VideoAnnotator| component.
         console.log('In Session render user_videos: ' + this.state.user_videos)
-        if (this.state.load_video) {
-            console.log("Load Video")
-            return <VideoAnnotator video_id={getYTVideoId(this.state.video_url)} />
-        }
 
         let user_videos;
         if (this.state.loading_user_videos) {

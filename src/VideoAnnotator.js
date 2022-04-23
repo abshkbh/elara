@@ -3,7 +3,7 @@ import YouTube from 'react-youtube';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import Constants from './Constants.js';
-import { useParams } from 'react-router-dom';
+import { useParams, useLocation, useNavigate } from 'react-router-dom';
 import Logout from './Logout.js';
 
 const ADD_ANNOTATION_TEXT = "ADD ANNOTATION"
@@ -47,12 +47,20 @@ function getPrettyTs(seconds) {
     return mins.toString() + ":" + secs.toString().padStart(2, '0')
 }
 
-export function withRouter(Children) {
-    return (props) => {
-
-        const match = { params: useParams() };
-        return <Children {...props} match={match} />
+export function withRouter(Component) {
+    function ComponentWithRouterProp(props) {
+        let location = useLocation();
+        let navigate = useNavigate();
+        let params = useParams();
+        return (
+            <Component
+                {...props}
+                router={{ location, navigate, params }}
+            />
+        );
     }
+
+    return ComponentWithRouterProp;
 }
 
 // This component -
@@ -63,14 +71,7 @@ export function withRouter(Children) {
 class VideoAnnotator extends React.Component {
     constructor(props) {
         super(props)
-        // The `video_id` can come from Session or as a "Link" from UserVideos. Both these cases
-        // pass paramateres in a different way.
-        let video_id;
-        if (typeof this.props.video_id !== 'undefined') {
-            video_id = this.props.video_id
-        } else {
-            video_id = this.props.match.params.video_id
-        }
+        let video_id = this.props.router.params.video_id
 
         this.state = {
             // This controls whether the text box to enter a new annotation should be shown or not.
