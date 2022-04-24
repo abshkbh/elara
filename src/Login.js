@@ -150,13 +150,11 @@ class Login extends React.Component {
             .then(data => {
                 // TODO: This returns data not found even when it's successful.
                 console.log("Google Oauth Login Data: ", data)
-                this.setState({
-                    session_started: true
-                })
+                this.props.router.navigate(Constants.APP_ROUTE_SESSION)
             }
             )
             .catch(error => {
-                console.log("Google Ooauth Login Error: " + error)
+                console.log("Google Oauth Login Error: " + error)
             })
     }
 
