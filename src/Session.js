@@ -129,7 +129,7 @@ class Session extends React.Component {
                 console.log("loadUserVideos data: ", data)
                 this.setState(
                     {
-                        user_videos: data.user_videos,
+                        user_videos: Object.entries(data.user_videos),
                         loading_user_videos: false
                     }
                 )

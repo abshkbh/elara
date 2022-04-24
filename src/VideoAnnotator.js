@@ -5,6 +5,7 @@ import Button from '@material-ui/core/Button';
 import Constants from './Constants.js';
 import { useParams, useLocation, useNavigate } from 'react-router-dom';
 import Logout from './Logout.js';
+import DeleteResource from './DeleteResource.js';
 
 const ADD_ANNOTATION_TEXT = "ADD ANNOTATION"
 const ANNOTATION_ID = "annotation"
@@ -71,8 +72,6 @@ export function withRouter(Component) {
 class VideoAnnotator extends React.Component {
     constructor(props) {
         super(props)
-        let video_id = this.props.router.params.video_id
-
         this.state = {
             // This controls whether the text box to enter a new annotation should be shown or not.
             show_annotation_input: false,
@@ -93,18 +92,16 @@ class VideoAnnotator extends React.Component {
 
             // The tile of the video being annotated.
             video_title: '',
-
-            // The id of the video being annotated.
-            video_id: video_id,
         }
 
-        console.log("video_id: " + this.state.video_id)
+        console.log("video_id: " + this.props.router.params.video_id)
         this.handleAddAnnotation = this.handleAddAnnotation.bind(this)
         this.handleSubmitAnnotation = this.handleSubmitAnnotation.bind(this)
         this.updateInput = this.updateInput.bind(this)
         this.seekVideo = this.seekVideo.bind(this)
         this.onReady = this.onReady.bind(this)
         this.loadExistingAnnotations = this.loadExistingAnnotations.bind(this)
+        this.handleDeleteAnnotationSuccessCb = this.handleDeleteAnnotationSuccessCb.bind(this)
     }
 
     componentDidMount() {
@@ -131,7 +128,7 @@ class VideoAnnotator extends React.Component {
     // Queries the backend for existing annotations associated with the video.
     loadExistingAnnotations() {
         console.log('loadExistingAnnotations')
-        let route_to_fetch = Constants.SERVER + Constants.SERVER_ROUTE_ANNOTATIONS + "?video_id=" + this.state.video_id
+        let route_to_fetch = Constants.SERVER + Constants.SERVER_ROUTE_ANNOTATIONS + "?video_id=" + this.props.router.params.video_id
         console.log('Fetching: ' + route_to_fetch)
         fetch(route_to_fetch,
             {
@@ -191,7 +188,7 @@ class VideoAnnotator extends React.Component {
                 credentials: "include",
                 mode: "cors",
                 withCredentials: true,
-                body: JSON.stringify({ video_id: (this.state.video_id), ts: this.state.current_annotation_ts, content: this.state.current_annotation_content, video_title: this.state.video_title }),
+                body: JSON.stringify({ video_id: (this.props.router.params.video_id), ts: this.state.current_annotation_ts, content: this.state.current_annotation_content, video_title: this.state.video_title }),
             }
         ).then(handleFetchErrors)
             .then(response => {
@@ -212,6 +209,15 @@ class VideoAnnotator extends React.Component {
             .catch(error => {
                 console.log("Submit annotation error: " + error)
             })
+    }
+
+    handleDeleteAnnotationSuccessCb(annotation_ts) {
+        console.log("handleDeleteAnnotationSuccesCB annotation_ts: " + annotation_ts)
+        this.setState(
+            {
+                annotations: this.state.annotations.filter(annotation => annotation.time_stamp !== annotation_ts)
+            }
+        )
     }
 
     // Seeks the video player to timestamp |ts|.
@@ -243,15 +249,17 @@ class VideoAnnotator extends React.Component {
         }
 
         // TODO: Pull <li> in a separate component.
+        // TODO: Don't think toString is needed here. It's already a string.
         const annotations = this.state.annotations.map((annotation) => <li key={annotation.time_stamp.toString()} onClick={() => this.seekVideo(annotation.time_stamp)}>
             <a href="#">{getPrettyTs(annotation.time_stamp)}</a>
             {"- " + annotation.content}
+            <DeleteResource resource_type={Constants.resourceType.annotation} video_id={this.props.router.params.video_id} annotation_ts={annotation.time_stamp} delete_annotation_success_cb={this.handleDeleteAnnotationSuccessCb} />
         </li>)
 
         return (
             <div>
                 <div>
-                    <YouTube videoId={this.state.video_id}
+                    <YouTube videoId={this.props.router.params.video_id}
                         opts={opts}
                         id={VIDEO_PLAYER_ID}
                         onReady={this.onReady}

@@ -20,8 +20,21 @@ export default {
     SERVER_ROUTE_LOGOUT: "/logout",
     // Server route to hit to get a user's annotated videos.
     SERVER_ROUTE_LIST: "/list",
+    // Delete an annotated video.
+    SERVER_ROUTE_DELETE_VIDEO: "/delete/video",
     // Server route to get annotations for a video.
     SERVER_ROUTE_ANNOTATIONS: "/annotations",
     // Server route to store annotations for a video
     SERVER_ROUTE_ADD_ANNOTATION: "/add",
+    // Delete an annotation.
+    SERVER_ROUTE_DELETE_ANNOTATION: "/delete/annotation",
+
+    // The app deals with two types of resources -
+    // - Videos being annotated.
+    // - Annotations per video.
+    resourceType: Object.freeze({
+        video: 0,
+        annotation: 1
+    }),
 }
+
