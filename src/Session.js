@@ -9,7 +9,7 @@ import { useParams, useLocation, useNavigate } from 'react-router-dom';
 
 const URL_TEXT = "URL"
 const URL_ID = "url"
-const LOAD_VIDEO_TEXT = "LOAD VIDEO"
+const LOAD_VIDEO_TEXT = "LOAD YOUTUBE VIDEO URL"
 
 // Takes in a HTTP |response| and throws an error if it's not 200 else returns |response| as is.
 function handleFetchErrors(response) {
