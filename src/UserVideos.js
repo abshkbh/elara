@@ -12,6 +12,9 @@ class UserVideos extends React.Component {
         this.handleDeleteSuccessCb = this.handleDeleteSuccessCb.bind(this)
         this.state = {
             // Copying from props because this can be mutated.
+            // List of videos annotated by the user.
+            // This is in the form of an array of arrays -
+            // [["videoid1", "videotitle1"], ["videoid2", "videotitle2"]...]
             user_videos: this.props.user_videos
         }
     }

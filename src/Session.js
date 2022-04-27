@@ -58,7 +58,9 @@ class Session extends React.Component {
             // URL of the video to annotate.
             video_url: '',
 
-            // List of videos annoated by the user. This is populated after querying the backend.
+            // List of videos annotated by the user. This is populated after querying the backend.
+            // This is in the form of an array of arrays -
+            // [["videoid1", "videotitle1"], ["videoid2", "videotitle2"]...]
             user_videos: [],
 
             // This is true when |user_videos| are being retrieved by the backend.
@@ -129,6 +131,8 @@ class Session extends React.Component {
                 console.log("loadUserVideos data: ", data)
                 this.setState(
                     {
+                        // Conver the object into an array as we need to filter it in other
+                        // components.
                         user_videos: Object.entries(data.user_videos),
                         loading_user_videos: false
                     }

@@ -85,8 +85,10 @@ class VideoAnnotator extends React.Component {
             // The handle to the embedded Youtube player associated with a video.
             player: null,
 
-            // TODO: This is a list of "annotation" objects like {"time_stamp" : "123.45",
-            // "content": "Hello"}. The keys for now have to map what the backend has. We should
+            // This is an arrayof "annotation" objects like [{"time_stamp" : "123.45",
+            // "content": "Hello"}, {"time_stamp" : "3.45", "content": "Hello2"}].
+            //
+            // TODO: The keys for now have to map what the backend has. We should
             // decouple this by using a "map" operator in `loadExistingAnnotations`.
             annotations: [],
 
