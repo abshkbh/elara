@@ -213,6 +213,8 @@ class VideoAnnotator extends React.Component {
             })
     }
 
+    // Called when an annotation has been successfully deleted. It removes the annotation from the
+    // UI.
     handleDeleteAnnotationSuccessCb(annotation_ts) {
         console.log("handleDeleteAnnotationSuccesCB annotation_ts: " + annotation_ts)
         this.setState(

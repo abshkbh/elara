@@ -19,6 +19,8 @@ class UserVideos extends React.Component {
         }
     }
 
+    // Called when an annotated video has been successfully deleted. It removes the video from the
+    // UI.
     handleDeleteSuccessCb(video_id) {
         console.log("handleDeleteSuccessCb video_id: " + video_id)
         this.setState(
