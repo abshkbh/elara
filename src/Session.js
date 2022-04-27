@@ -155,7 +155,7 @@ class Session extends React.Component {
         if (this.state.loading_user_videos) {
             user_videos = <p>Loading...</p>
         } else {
-            user_videos = <UserVideos email={this.props.email} user_videos={this.state.user_videos} />
+            user_videos = <UserVideos user_videos={this.state.user_videos} />
         }
 
         return (
