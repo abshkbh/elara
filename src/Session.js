@@ -160,19 +160,19 @@ class Session extends React.Component {
 
         return (
             <div className="session">
-                <div>
+                <div className="url-label">
                     <label>{URL_TEXT}</label>
                 </div>
-                <div>
+                <div className="url">
                     <TextField id={URL_ID} label={URL_TEXT}
                         variant="outlined"
                         onChange={this.updateInput}
                         value={this.state.video_url} />
                 </div>
-                <div>
+                <div className="load">
                     <Button variant="contained" onClick={() => this.handleLoadVideo()}>{LOAD_VIDEO_TEXT}</Button>
                 </div>
-                <div>
+                <div className="user-videos">
                     {user_videos}
                 </div>
                 <div>
